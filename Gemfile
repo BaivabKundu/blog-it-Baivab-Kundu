@@ -58,3 +58,6 @@ group :test do
 end
 
 gem "ostruct"
+
+# For compiling and bundling JavaScript. Read more: https://github.com/shakacode/shakapacker
+gem "shakapacker", "~> 6.6.0"
