@@ -17,4 +17,3 @@ export const setAuthHeaders = () => {
     axios.defaults.headers["X-Auth-Token"] = token;
   }
 };
-

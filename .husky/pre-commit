@@ -1,0 +1,7 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+. "$(dirname "$0")/helpers/lint_staged.sh"
+. "$(dirname "$0")/helpers/prevent_conflict_markers.sh"
+
+prevent_conflict_markers
+lint_staged_files
