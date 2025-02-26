@@ -24,8 +24,8 @@ development:
   dev_server:
     https: false
     host: localhost
-    port: 8014
-    public: localhost:8014
+    port: 8015
+    public: localhost:8015
     hmr: false
     # Defaults to the inverse of hmr. Uncomment to manually set this.
     # live_reload: true
