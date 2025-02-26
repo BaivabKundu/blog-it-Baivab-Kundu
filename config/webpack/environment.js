@@ -9,7 +9,12 @@ const commonOptions = {
   infrastructureLogging: {
     level: "warn",
   },
-  resolve,
+  resolve: {
+    ...resolve,
+    fallback: {
+      util: require.resolve("util/"),
+    },
+  },
   module: {
     rules,
   },
@@ -33,4 +38,5 @@ const customWebpackConfig = customizeWebpackDefaultRules(
 );
 
 const commonWebpackConfig = () => merge({}, customWebpackConfig, commonOptions);
+
 module.exports = commonWebpackConfig;
