@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Book, List } from "@bigbinary/neeto-icons";
+import { Avatar } from "@bigbinary/neetoui";
 import { NavLink } from "react-router-dom";
 
 const Sidebar = () => (
@@ -20,7 +21,7 @@ const Sidebar = () => (
       <List className="h-6 w-6" />
     </NavLink>
     <div className="mt-4 flex h-full flex-col justify-end">
-      <div className="h-12 w-12 rounded-full bg-gray-300" />
+      <Avatar size="large" />
     </div>
   </div>
 );
