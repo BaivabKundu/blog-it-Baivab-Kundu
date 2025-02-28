@@ -3,7 +3,7 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
-      resources :posts, only: :index
+      resources :posts, except: %i[new edit destroy update], param: :slug
     end
   end
 
