@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { Typography, Button } from "@bigbinary/neetoui";
+import { Typography, Button, Tag } from "@bigbinary/neetoui";
 import { format } from "date-fns";
 import { isNil, isEmpty, either } from "ramda";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
@@ -8,15 +8,20 @@ import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import postsApi from "apis/posts";
 import PageLoader from "components/commons/PageLoader";
 
-const Posts = () => {
+const Posts = ({ categorySearched, selectedCategories }) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchPosts = async () => {
     try {
+      const params = {
+        category_name: categorySearched,
+        category_names: selectedCategories,
+      };
+
       const {
         data: { posts },
-      } = await postsApi.fetch();
+      } = await postsApi.fetch(params);
       setPosts(posts);
       setLoading(false);
     } catch (error) {
@@ -27,7 +32,7 @@ const Posts = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [categorySearched, selectedCategories]);
 
   if (loading) {
     return (
@@ -73,6 +78,18 @@ const Posts = () => {
                 </Link>
                 <Typography className="text-gray-600">
                   {post.description}
+                </Typography>
+                <div className="flex space-x-2">
+                  {post.categories.map(category => (
+                    <Tag
+                      className="border-none bg-green-100 px-2 py-1 text-black"
+                      key={category.id}
+                      label={category.category_name}
+                    />
+                  ))}
+                </div>
+                <Typography className="text-black-500 font-semibold">
+                  {post.assigned_user?.username}
                 </Typography>
                 <Typography className="text-gray-500">
                   {format(new Date(post.created_at), "dd MMMM yyyy")}
