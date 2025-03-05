@@ -46,8 +46,8 @@ const App = () => {
         )}
       >
         <Switch>
-          <Route exact component={ShowPost} path="/posts/:slug" />
           <Route exact component={CreatePost} path="/posts/create" />
+          <Route exact component={ShowPost} path="/posts/:slug" />
           <Route
             exact
             path="/blogs"
