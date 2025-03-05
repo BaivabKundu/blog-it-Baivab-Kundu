@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Book, Category, Edit, List } from "@bigbinary/neeto-icons";
+import { Book, Edit, List, ListDetails } from "@bigbinary/neeto-icons";
 import { Avatar, Button } from "@bigbinary/neetoui";
 import { NavLink } from "react-router-dom";
 
@@ -40,7 +40,7 @@ const Sidebar = ({ onCategorySearch, onCategorySelect, onSidebarOpen }) => {
         </NavLink>
         <Button
           className="my-2 rounded-lg p-2 hover:bg-gray-400"
-          icon={() => <Category />}
+          icon={() => <ListDetails />}
           label=""
           style="text"
           onClick={handleSidePane}
