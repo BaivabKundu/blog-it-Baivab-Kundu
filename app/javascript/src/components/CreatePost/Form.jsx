@@ -4,6 +4,7 @@ import { Button, Typography } from "@bigbinary/neetoui";
 import {
   Input,
   Textarea,
+  Select,
   Form as NeetoUIForm,
 } from "@bigbinary/neetoui/formik";
 import PropTypes from "prop-types";
@@ -16,6 +17,7 @@ const Form = ({
   handleSubmit,
   onCancel,
   loading,
+  categories,
 }) => (
   <NeetoUIForm
     formikProps={{
@@ -27,12 +29,12 @@ const Form = ({
     <div className="w-full">
       <div className="space-y-2">
         <Typography>Title</Typography>
-        <Input
-          required
-          // maxLength={100}
-          name="title"
-          placeholder="Enter title"
-          size="large"
+        <Input required name="title" placeholder="Enter title" size="large" />
+        <Select
+          isMulti
+          name="new_post_categories"
+          options={categories}
+          placeholder="Select categories"
         />
         <Typography>Description</Typography>
         <Textarea
