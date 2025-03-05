@@ -17,18 +17,8 @@
           )
         end
 
-        post_ids = posts.distinct.pluck(:id)
-
-        posts_with_categories = Post.includes(:categories, :assigned_user)
-          .where(id: post_ids)
-          .as_json(
-            include: [
-              { categories: { only: %i[category_name id] } },
-              { assigned_user: { only: %i[id username email], methods: [:present?] } }
-            ]
-          )
-
-        render status: :ok, json: { posts: posts_with_categories }
+        @post_ids = posts.distinct.pluck(:id)
+        @posts = Post.includes(:categories, :assigned_user).where(id: @post_ids)
       end
 
       def create
@@ -38,16 +28,7 @@
       end
 
       def show
-        post = Post.includes(:assigned_user, :categories).find_by!(slug: params[:slug])
-        render_json(
-          {
-            post: post.as_json(
-              include: [
-                { assigned_user: { only: [:id, :username] } },
-                { categories: { only: [:id, :category_name] } }
-              ]
-            )
-          })
+        render
       end
 
       private
