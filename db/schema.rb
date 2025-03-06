@@ -63,4 +63,5 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_06_070752) do
   add_foreign_key "categories_posts", "posts"
   add_foreign_key "posts", "organizations", column: "assigned_organization_id"
   add_foreign_key "posts", "users", column: "assigned_user_id"
+  add_foreign_key "users", "organizations", column: "assigned_organization_id"
 end
