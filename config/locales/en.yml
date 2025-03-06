@@ -28,6 +28,9 @@
 #       enabled: "ON"
 
 en:
+  session:
+    could_not_auth: "Could not authenticate with the provided credentials."
+    incorrect_credentials: "Incorrect credentials, try again."
   successfully_created: "%{entity} was successfully created!"
   successfully_updated: "%{entity} was successfully updated!"
   post:

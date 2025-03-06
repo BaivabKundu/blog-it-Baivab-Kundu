@@ -1,6 +1,8 @@
     # frozen_string_literal: true
 
     class Api::V1::PostsController < ApplicationController
+      skip_before_action :authenticate_user_using_x_auth_token
+
       before_action :load_post!, only: %i[show]
       def index
         posts = Post.includes(:categories, :assigned_user)

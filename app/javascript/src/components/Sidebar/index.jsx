@@ -3,11 +3,16 @@ import React, { useState } from "react";
 import { Book, Edit, List, ListDetails } from "@bigbinary/neeto-icons";
 import { Avatar, Button } from "@bigbinary/neetoui";
 import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom/cjs/react-router-dom";
+
+import { getFromLocalStorage } from "utils/storage";
 
 import SidePane from "./SidePane";
 
 const Sidebar = ({ onCategorySearch, onCategorySelect, onSidebarOpen }) => {
   const [isPaneOpen, setIsPaneOpen] = useState(false);
+
+  const userName = getFromLocalStorage("authUserName");
 
   const handleSidePane = () => {
     setIsPaneOpen(!isPaneOpen);
@@ -47,6 +52,9 @@ const Sidebar = ({ onCategorySearch, onCategorySelect, onSidebarOpen }) => {
         />
         <div className="mb-6 mt-4 flex h-full flex-col justify-end">
           <Avatar size="large" />
+          <Link className="flex items-center gap-x-1 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-300 focus:shadow">
+            <span className="block">{userName}</span>
+          </Link>
         </div>
       </div>
       <SidePane

@@ -42,4 +42,16 @@ export const signupSchema = yup.object({
     .string()
     .required("Password confirmation is required")
     .oneOf([yup.ref("password"), null], "Passwords must match"),
+  assigned_organization_id: yup
+    .object()
+    .shape({
+      label: yup.string().required(),
+      value: yup.string().required(),
+    })
+    .required("Organization is required")
+    .test(
+      "is-valid-organization",
+      "Please select a valid organization",
+      value => value && value.value && !isNaN(value.value)
+    ),
 });

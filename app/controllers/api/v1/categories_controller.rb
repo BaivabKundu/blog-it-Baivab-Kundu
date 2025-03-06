@@ -1,6 +1,8 @@
     # frozen_string_literal: true
 
     class Api::V1::CategoriesController < ApplicationController
+      skip_before_action :authenticate_user_using_x_auth_token
+
       def index
         categories = Category.all
         render status: :ok, json: { categories: }
