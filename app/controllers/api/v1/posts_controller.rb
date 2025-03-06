@@ -24,7 +24,7 @@
       def create
         post = Post.new(post_params)
         post.save!
-        render_notice(t("successfully_created"))
+        render_notice(t("successfully_created", entity: "Post"))
       end
 
       def show

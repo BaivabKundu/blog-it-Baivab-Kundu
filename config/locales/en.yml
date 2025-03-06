@@ -28,8 +28,8 @@
 #       enabled: "ON"
 
 en:
-  successfully_created: "Task was successfully created!"
-  successfully_updated: "Task was successfully updated!"
+  successfully_created: "%{entity} was successfully created!"
+  successfully_updated: "%{entity} was successfully updated!"
   post:
     slug:
       immutable: "is immutable"

@@ -5,6 +5,7 @@ import { Route, Switch } from "react-router-dom";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 import { ToastContainer } from "react-toastify";
 
+import Signup from "components/Authentication/Signup";
 import CreatePost from "components/CreatePost";
 import Lists from "components/Lists";
 import BlogPosts from "components/Posts";
@@ -59,6 +60,7 @@ const App = () => {
             )}
           />
           <Route exact component={Lists} path="/lists" />
+          <Route exact component={Signup} path="/signup" />
           <Redirect path="*" to="/blogs" />
         </Switch>
       </div>
