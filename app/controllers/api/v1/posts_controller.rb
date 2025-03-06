@@ -1,11 +1,16 @@
     # frozen_string_literal: true
 
     class Api::V1::PostsController < ApplicationController
-      skip_before_action :authenticate_user_using_x_auth_token
-
+      before_action :authenticate_user_using_x_auth_token
       before_action :load_post!, only: %i[show]
+
       def index
         posts = Post.includes(:categories, :assigned_user)
+
+        if current_user
+          posts = posts.where(assigned_organization_id: current_user.assigned_organization_id)
+        end
+
         if params[:category_id].present?
           posts = posts.joins(:categories).where(categories: { id: params[:category_id] })
         elsif params[:category_name].present?

@@ -7,7 +7,7 @@ Rails.application.routes.draw do
         resources :posts, except: %i[new edit destroy update], param: :slug
         resources :users, only: [:index, :create]
         resources :categories, only: %i[index create]
-        resource :session, only: [:create]
+        resource :session, only: [:create, :destroy]
         resources :organizations, only: [:index]
       end
     end

@@ -5,7 +5,7 @@ import { setAuthHeaders } from "apis/axios";
 import LoginForm from "components/Authentication/Form/Login";
 import { setToLocalStorage } from "utils/storage";
 
-const Login = ({ history }) => {
+const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async values => {
@@ -23,7 +23,7 @@ const Login = ({ history }) => {
         userName: response.data.username,
       });
       setAuthHeaders();
-      history.push("/blogs");
+      window.location.href = "/blogs";
       setLoading(false);
     } catch (error) {
       logger.error(error);
