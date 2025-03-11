@@ -71,7 +71,7 @@ const Posts = ({ categorySearched, selectedCategories }) => {
           .map(post => (
             <article className="group" key={post.id}>
               <section className="block space-y-2 hover:no-underline">
-                <Link to={`/posts/${post.slug}`}>
+                <Link to={`/posts/${post.slug}/show`}>
                   <Typography className="text-xl font-bold text-gray-800 group-hover:text-blue-600">
                     {post.title}
                   </Typography>

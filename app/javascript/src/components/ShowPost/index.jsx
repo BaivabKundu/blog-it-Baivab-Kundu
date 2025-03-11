@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import { Typography, Tag, Avatar } from "@bigbinary/neetoui";
+import { Edit } from "@bigbinary/neeto-icons";
+import { Typography, Tag, Avatar, Button } from "@bigbinary/neetoui";
 import { format } from "date-fns";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, Link } from "react-router-dom";
 
 import postsApi from "apis/posts";
 import PageLoader from "components/commons/PageLoader";
@@ -47,9 +48,14 @@ const Show = () => {
               />
             ))}
           </div>
-          <Typography className="text-3xl font-semibold">
-            {post?.title}
-          </Typography>
+          <div className="flex justify-between">
+            <Typography className="text-3xl font-semibold">
+              {post?.title}
+            </Typography>
+            <Link to={`/posts/${post.slug}/edit`}>
+              <Button icon={Edit} size="large" style="text" />
+            </Link>
+          </div>
           <div className="ml-2 flex items-center space-x-5">
             <Avatar size="large" />
             <div className="flex flex-col">

@@ -12,7 +12,7 @@ import PropTypes from "prop-types";
 import { validationSchema } from "utils/validationSchema";
 
 const Form = ({
-  type = "create",
+  type,
   initialValues,
   handleSubmit,
   onCancel,

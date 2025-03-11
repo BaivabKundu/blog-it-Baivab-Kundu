@@ -1,8 +1,8 @@
     # frozen_string_literal: true
 
     class Api::V1::PostsController < ApplicationController
-      before_action :authenticate_user_using_x_auth_token
-      before_action :load_post!, only: %i[show]
+      before_action :load_post!, only: %i[show update]
+      before_action :authenticate_user_using_x_auth_token, only: :update
 
       def index
         posts = Post.includes(:categories, :assigned_user)
@@ -36,6 +36,11 @@
 
       def show
         render
+      end
+
+      def update
+        @post.update!(post_params)
+        render_notice(t("successfully_updated", entity: "Post"))
       end
 
       private
