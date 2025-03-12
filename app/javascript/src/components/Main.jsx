@@ -10,6 +10,7 @@ import { Signup, Login } from "components/Authentication";
 import PrivateRoute from "components/commons/PrivateRoute";
 import CreatePost from "components/CreatePost";
 import EditPost from "components/CreatePost/Edit";
+import PreviewPost from "components/CreatePost/Preview";
 import Lists from "components/Lists";
 import BlogPosts from "components/Posts";
 import ShowPost from "components/ShowPost";
@@ -20,6 +21,7 @@ const App = () => {
   const [categorySearched, setCategorySearched] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [showUserPosts, setShowUserPosts] = useState(false);
 
   const authToken = getFromLocalStorage("authToken");
   const isLoggedIn = !either(isNil, isEmpty)(authToken);
@@ -36,6 +38,10 @@ const App = () => {
     setIsSidebarOpen(isSidepaneOpen || false);
   };
 
+  const handleUserPosts = value => {
+    setShowUserPosts(value);
+  };
+
   return (
     <Router>
       <div className="flex h-screen w-full overflow-hidden">
@@ -44,6 +50,7 @@ const App = () => {
           <Sidebar
             onCategorySearch={handleCategorySearch}
             onCategorySelect={handleCategorySelect}
+            onShowUserPosts={handleUserPosts}
             onSidebarOpen={handleSidepane}
           />
         )}
@@ -57,19 +64,22 @@ const App = () => {
           )}
         >
           <Switch>
+            <Route exact component={PreviewPost} path="/posts/:slug/preview" />
             <Route exact component={ShowPost} path="/posts/:slug/show" />
             <Route exact component={EditPost} path="/posts/:slug/edit" />
             <Route exact component={CreatePost} path="/posts/create" />
             <PrivateRoute
               exact
-              component={BlogPosts}
               condition={isLoggedIn}
               path="/blogs"
               redirectRoute="/login"
-              props={{
-                categorySearched,
-                selectedCategories,
-              }}
+              render={() => (
+                <BlogPosts
+                  categorySearched={categorySearched}
+                  selectedCategories={selectedCategories}
+                  showUserPosts={showUserPosts}
+                />
+              )}
             />
             <Route exact component={Lists} path="/lists" />
             <Route exact component={Login} path="/login">

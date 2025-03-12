@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 
-import { Book, Edit, Left, List, ListDetails } from "@bigbinary/neeto-icons";
+import {
+  Book,
+  Edit,
+  FileGeneric,
+  Left,
+  List,
+  ListDetails,
+} from "@bigbinary/neeto-icons";
 import { Avatar, Button, Dropdown, Typography } from "@bigbinary/neetoui";
+import classnames from "classnames";
 import { NavLink } from "react-router-dom";
 
 import authApi from "apis/auth";
@@ -10,8 +18,14 @@ import { getFromLocalStorage, setToLocalStorage } from "utils/storage";
 
 import SidePane from "./SidePane";
 
-const Sidebar = ({ onCategorySearch, onCategorySelect, onSidebarOpen }) => {
+const Sidebar = ({
+  onCategorySearch,
+  onCategorySelect,
+  onSidebarOpen,
+  onShowUserPosts,
+}) => {
   const [isPaneOpen, setIsPaneOpen] = useState(false);
+  const [showUserPosts, setShowUserPosts] = useState(false);
 
   const userName = getFromLocalStorage("authUserName");
   const email = getFromLocalStorage("authEmail");
@@ -19,6 +33,11 @@ const Sidebar = ({ onCategorySearch, onCategorySelect, onSidebarOpen }) => {
   const handleSidePane = () => {
     setIsPaneOpen(!isPaneOpen);
     onSidebarOpen(!isPaneOpen);
+  };
+
+  const handleUserPosts = () => {
+    setShowUserPosts(!showUserPosts);
+    onShowUserPosts(!showUserPosts);
   };
 
   const handleLogout = async () => {
@@ -68,11 +87,20 @@ const Sidebar = ({ onCategorySearch, onCategorySelect, onSidebarOpen }) => {
           style="text"
           onClick={handleSidePane}
         />
+        <Button
+          icon={() => <FileGeneric />}
+          label=""
+          style="text"
+          className={classnames("my-2 rounded-lg p-2", {
+            "bg-black text-white": showUserPosts,
+            "hover:bg-gray-400": !showUserPosts,
+          })}
+          onClick={handleUserPosts}
+        />
         <div className="mb-6 flex h-full flex-col justify-end">
           <Dropdown
             buttonSize="large"
             buttonStyle="text"
-            className=""
             closeOnSelect={false}
             position="right"
             customTarget={

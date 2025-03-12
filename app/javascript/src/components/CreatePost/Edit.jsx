@@ -100,16 +100,18 @@ const EditPost = () => {
     }
   };
 
-  const handleChange = values => {
-    setPost({
+  const handleChange = () => {
+    const previewPost = {
       ...post,
-      title: values.title,
-      description: values.description,
-      categories: values.new_post_categories.map(category => ({
+      title: initialValues.title,
+      description: initialValues.description,
+      categories: initialValues.new_post_categories.map(category => ({
         id: category.value,
         category_name: category.label,
       })),
-    });
+    };
+    localStorage.setItem("previewPost", JSON.stringify(previewPost));
+    window.open(`/posts/${slug}/preview`, "_blank");
   };
 
   useEffect(() => {
@@ -136,14 +138,7 @@ const EditPost = () => {
           Edit blog post
         </Typography>
         <div className="flex">
-          <Button
-            icon={ExternalLink}
-            style="text"
-            onClick={() => {
-              localStorage.setItem("previewPost", JSON.stringify(post));
-              window.open(`/posts/${slug}/preview`, "_blank");
-            }}
-          />
+          <Button icon={ExternalLink} style="text" onClick={handleChange} />
           <Button
             className="mx-2 rounded-md px-4 py-2 text-gray-700 transition-colors hover:bg-gray-100"
             label="Cancel"
@@ -188,7 +183,6 @@ const EditPost = () => {
             initialValues={initialValues}
             loading={loading}
             type="update"
-            onChange={handleChange}
           />
         )}
       </div>
