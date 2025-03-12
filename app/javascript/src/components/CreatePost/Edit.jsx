@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-import { Typography } from "@bigbinary/neetoui";
+import { ExternalLink, MenuHorizontal } from "@bigbinary/neeto-icons";
+import {
+  Typography,
+  Button,
+  ActionDropdown,
+  Dropdown,
+} from "@bigbinary/neetoui";
 import { useHistory, useParams } from "react-router-dom";
 
 import categoriesApi from "apis/categories";
@@ -12,11 +18,13 @@ const EditPost = () => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [count, setCount] = useState(0);
+  const [post, setPost] = useState({});
   const [initialValues, setInitialValues] = useState({
     title: "",
     description: "",
     new_post_categories: [],
   });
+  const [selectedOption, setSelectedOption] = useState("Publish");
 
   const { slug } = useParams();
   const history = useHistory();
@@ -30,6 +38,7 @@ const EditPost = () => {
 
       const postData = {
         ...values,
+        status: selectedOption === "Save as draft" ? "draft" : "published",
         category_ids,
       };
 
@@ -57,6 +66,7 @@ const EditPost = () => {
         })),
       };
 
+      setPost(post);
       setInitialValues(newInitialValues);
       setCount(prevCount => prevCount + 1);
     } catch (error) {
@@ -81,6 +91,27 @@ const EditPost = () => {
     }
   };
 
+  const deletePost = async () => {
+    try {
+      await postsApi.destroy(slug);
+      history.push("/blogs");
+    } catch (error) {
+      logger.error(error);
+    }
+  };
+
+  const handleChange = values => {
+    setPost({
+      ...post,
+      title: values.title,
+      description: values.description,
+      categories: values.new_post_categories.map(category => ({
+        id: category.value,
+        category_name: category.label,
+      })),
+    });
+  };
+
   useEffect(() => {
     if (count === 2) {
       return;
@@ -100,9 +131,55 @@ const EditPost = () => {
 
   return (
     <div className="mx-24 w-auto gap-y-8 px-4 py-8">
-      <Typography className="text-5xl font-bold text-gray-800">
-        Edit blog post
-      </Typography>
+      <div className="flex items-center justify-between">
+        <Typography className="text-5xl font-bold text-gray-800">
+          Edit blog post
+        </Typography>
+        <div className="flex">
+          <Button
+            icon={ExternalLink}
+            style="text"
+            onClick={() => {
+              localStorage.setItem("previewPost", JSON.stringify(post));
+              window.open(`/posts/${slug}/preview`, "_blank");
+            }}
+          />
+          <Button
+            className="mx-2 rounded-md px-4 py-2 text-gray-700 transition-colors hover:bg-gray-100"
+            label="Cancel"
+            style="secondary"
+            onClick={() => history.push("/blogs")}
+          />
+          <ActionDropdown
+            buttonStyle="text"
+            // className="rounded-l-md bg-black px-4 py-3 text-white"
+            label={selectedOption}
+            loading={loading}
+            onClick={() => document.querySelector("form").requestSubmit()}
+          >
+            <div className="flex flex-col">
+              <Button
+                label="Publish"
+                style="secondary"
+                onClick={() => setSelectedOption("Publish")}
+              />
+              <Button
+                label="Save as draft"
+                style="secondary"
+                onClick={() => setSelectedOption("Save as draft")}
+              />
+            </div>
+          </ActionDropdown>
+          <Dropdown buttonStyle="text" icon={MenuHorizontal}>
+            <Button
+              className="w-full"
+              label="Delete"
+              style="danger-text"
+              onClick={deletePost}
+            />
+          </Dropdown>
+        </div>
+      </div>
       <div className="flex-grow-1 mt-10 border-2 px-10 py-6">
         {count === 2 && (
           <PostForm
@@ -111,7 +188,7 @@ const EditPost = () => {
             initialValues={initialValues}
             loading={loading}
             type="update"
-            onCancel={() => history.push(`/posts/${slug}/show`)}
+            onChange={handleChange}
           />
         )}
       </div>
