@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       constraints(lambda { |req| req.format == :json }) do
-        resources :posts, except: %i[new edit destroy], param: :slug
+        resources :posts, except: %i[new edit], param: :slug
         resources :users, only: [:index, :create]
         resources :categories, only: %i[index create]
         resource :session, only: [:create, :destroy]
