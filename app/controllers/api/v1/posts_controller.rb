@@ -1,19 +1,18 @@
     # frozen_string_literal: true
 
     class Api::V1::PostsController < ApplicationController
-      before_action :load_post!, only: %i[show update]
-      before_action :authenticate_user_using_x_auth_token, only: :update
+      after_action :verify_authorized, except: %i[index]
+      after_action :verify_policy_scoped, only: %i[index]
+      before_action :load_post!, only: %i[show update destroy]
 
       def index
-        posts = Post.includes(:categories, :assigned_user)
+        posts = policy_scope(Post).includes(:categories, :assigned_user)
 
-        if current_user
-          posts = posts.where(assigned_organization_id: current_user.assigned_organization_id)
+        if params[:show_user_posts] == "true"
+          posts = posts.where(assigned_user_id: current_user.id)
         end
 
-        if params[:category_id].present?
-          posts = posts.joins(:categories).where(categories: { id: params[:category_id] })
-        elsif params[:category_name].present?
+        if params[:category_name].present?
           posts = posts.joins(:categories).where(
             "LOWER(categories.category_name) LIKE LOWER(?)",
             "%#{params[:category_name]}%")
@@ -30,17 +29,26 @@
 
       def create
         post = Post.new(post_params)
+        authorize post
         post.save!
         render_notice(t("successfully_created", entity: "Post"))
       end
 
       def show
+        authorize @post
         render
       end
 
       def update
+        authorize @post
         @post.update!(post_params)
         render_notice(t("successfully_updated", entity: "Post"))
+      end
+
+      def destroy
+        authorize @post
+        @post.destroy!
+        render_notice(t("successfully_deleted", entity: "Post"))
       end
 
       private
@@ -55,6 +63,7 @@
             :description,
             :assigned_user_id,
             :assigned_organization_id,
+            :status,
             category_ids: []
           )
         end
