@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-import { Filter, MenuHorizontal } from "@bigbinary/neeto-icons";
+import {
+  DownArrow,
+  Filter,
+  MenuHorizontal,
+  UpArrow,
+} from "@bigbinary/neeto-icons";
 import {
   Typography,
   Button,
@@ -9,7 +14,9 @@ import {
   Dropdown,
   ActionDropdown,
   Checkbox,
+  Tag,
 } from "@bigbinary/neetoui";
+import classnames from "classnames";
 import { format } from "date-fns";
 import { isNil, isEmpty, either } from "ramda";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
@@ -58,8 +65,6 @@ const Posts = ({ categorySearched, selectedCategories, showUserPosts }) => {
       const postsToUpdate = posts.filter(
         post => selectedRowKeys.includes(post.id) && post.status !== newStatus
       );
-
-      logger.log(postsToUpdate);
 
       if (postsToUpdate.length === 0) return;
 
@@ -121,6 +126,39 @@ const Posts = ({ categorySearched, selectedCategories, showUserPosts }) => {
             ? {
                 ...post,
                 status: status === "Published" ? "Draft" : "Published",
+              }
+            : post
+        )
+      );
+    } catch (error) {
+      logger.error(error);
+    }
+  };
+
+  const handleVote = async (slug, type) => {
+    try {
+      const postToUpdate = posts.find(post => post.slug === slug);
+      const payload = {
+        upvotes:
+          type === "upvote" ? postToUpdate.upvotes + 1 : postToUpdate.upvotes,
+        downvotes:
+          type === "downvote"
+            ? postToUpdate.downvotes + 1
+            : postToUpdate.downvotes,
+        is_bloggable: postToUpdate.is_bloggable,
+      };
+
+      const response = await postsApi.update(slug, payload);
+      const { is_bloggable } = response.data;
+
+      setPosts(prevPosts =>
+        prevPosts.map(post =>
+          post.slug === slug
+            ? {
+                ...post,
+                upvotes: payload.upvotes,
+                downvotes: payload.downvotes,
+                is_bloggable,
               }
             : post
         )
@@ -232,6 +270,9 @@ const Posts = ({ categorySearched, selectedCategories, showUserPosts }) => {
           .join(", "),
         updated_at: format(new Date(post.updated_at), "dd MMMM yyyy HH:MM"),
         status: post.status === "published" ? "Published" : "Draft",
+        upvotes: post.upvotes || 0,
+        downvotes: post.downvotes || 0,
+        is_bloggable: post.is_bloggable || false,
       }));
 
       setPosts(postValues);
@@ -336,13 +377,77 @@ const Posts = ({ categorySearched, selectedCategories, showUserPosts }) => {
           />
         )}
       </div>
-      <NeetoTable
-        rowSelection
-        columns={columns}
-        dataSource={posts}
-        selectedRowKeys={selectedRowKeys}
-        onRowSelect={handleSelect}
-      />
+      {showUserPosts && (
+        <NeetoTable
+          rowSelection
+          columns={columns}
+          dataSource={posts}
+          selectedRowKeys={selectedRowKeys}
+          onRowSelect={handleSelect}
+        />
+      )}
+      {!showUserPosts &&
+        posts.map(post => (
+          <div
+            className="mr-10 flex items-center justify-between"
+            key={post.id}
+          >
+            <div className="mb-4 w-full space-y-2 border-b-2 p-4">
+              <div className="flex">
+                <Link to={`/posts/${post.slug}/show`}>
+                  <Typography className=" text-xl font-semibold">
+                    {post.title}
+                  </Typography>
+                </Link>
+                {post.is_bloggable && (
+                  <Tag className="mx-5 border-green-500 bg-white font-semibold text-green-800">
+                    Blog it
+                  </Tag>
+                )}
+              </div>
+              {post.categories && (
+                <Tag className="border-none bg-green-200 p-2 text-black">
+                  {post.categories}
+                </Tag>
+              )}
+              <Typography className=" text-bold">
+                {post.assigned_user?.username}
+              </Typography>
+              <Typography className="text-sm text-gray-500">
+                {format(new Date(post.updated_at), "MMMM dd, yyyy")}
+              </Typography>
+            </div>
+            <div className="flex flex-col items-center">
+              <Button
+                className="mb-2"
+                style="text"
+                onClick={() => handleVote(post.slug, "upvote")}
+              >
+                <UpArrow
+                  className={classnames("h-7 w-7", {
+                    "text-green-500":
+                      (post.upvotes || 0) - (post.downvotes || 0) > 0,
+                  })}
+                />
+              </Button>
+              <Typography className="text-xl font-bold">
+                {(post.upvotes || 0) - (post.downvotes || 0)}
+              </Typography>
+              <Button
+                className="mt-2"
+                style="text"
+                onClick={() => handleVote(post.slug, "downvote")}
+              >
+                <DownArrow
+                  className={classnames("h-7 w-7", {
+                    "text-red-500":
+                      (post.upvotes || 0) - (post.downvotes || 0) < 0,
+                  })}
+                />
+              </Button>
+            </div>
+          </div>
+        ))}
       {isPaneOpen && (
         <FilterPane
           categories={filterCategories}

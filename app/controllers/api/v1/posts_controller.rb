@@ -45,7 +45,13 @@
       def update
         authorize @post
         @post.update!(post_params)
-        render_notice(t("successfully_updated", entity: "Post"))
+
+        ::Api::V1::PostBloggableUpdater.new(@post).call
+
+        render status: :ok, json: {
+          notice: t("successfully_updated", entity: "Post"),
+          is_bloggable: @post.is_bloggable
+        }
       end
 
       def destroy
@@ -67,6 +73,9 @@
             :assigned_user_id,
             :assigned_organization_id,
             :status,
+            :upvotes,
+            :downvotes,
+            :is_bloggable,
             category_ids: []
           )
         end
