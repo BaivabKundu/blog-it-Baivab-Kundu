@@ -37,4 +37,5 @@ en:
   post:
     slug:
       immutable: "is immutable"
+    not_found: "Couldn't find Post"
   generic_error: "Something went wrong. Please try again later."

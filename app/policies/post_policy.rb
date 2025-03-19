@@ -43,7 +43,7 @@ class PostPolicy
     def resolve
       published_posts = scope.where(
         assigned_organization_id: user.assigned_organization_id
-      ).where.not(status: "draft")
+      ).where.not(status: "draft").or(scope.where(assigned_user_id: user.id))
 
       draft_posts = scope.where(
         assigned_user_id: user.id,
