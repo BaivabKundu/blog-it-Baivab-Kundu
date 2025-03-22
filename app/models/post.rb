@@ -8,6 +8,9 @@ class Post < ApplicationRecord
 
   has_and_belongs_to_many :categories
 
+  has_many :votes
+  has_many :voting_users, through: :votes, source: :user
+
   belongs_to :assigned_user, foreign_key: "assigned_user_id", class_name: "User"
 
   belongs_to :assigned_organization, foreign_key: "assigned_organization_id", class_name: "Organization"

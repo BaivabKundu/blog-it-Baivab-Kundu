@@ -16,7 +16,7 @@ import {
   Checkbox,
   Tag,
 } from "@bigbinary/neetoui";
-import classnames from "classnames";
+// import classnames from "classnames";
 import { format } from "date-fns";
 import { isNil, isEmpty, either } from "ramda";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
@@ -135,35 +135,27 @@ const Posts = ({ categorySearched, selectedCategories, showUserPosts }) => {
     }
   };
 
-  const handleVote = async (slug, type) => {
+  const handleVote = async (slug, voteType) => {
     try {
-      const postToUpdate = posts.find(post => post.slug === slug);
-      const payload = {
-        upvotes:
-          type === "upvote" ? postToUpdate.upvotes + 1 : postToUpdate.upvotes,
-        downvotes:
-          type === "downvote"
-            ? postToUpdate.downvotes + 1
-            : postToUpdate.downvotes,
-        is_bloggable: postToUpdate.is_bloggable,
-      };
-
-      const response = await postsApi.update(slug, payload);
-      const { is_bloggable } = response.data;
+      const response = await postsApi.vote(slug, voteType);
+      const { upvotes, downvotes, is_bloggable } = response.data;
 
       setPosts(prevPosts =>
         prevPosts.map(post =>
           post.slug === slug
             ? {
                 ...post,
-                upvotes: payload.upvotes,
-                downvotes: payload.downvotes,
+                upvotes,
+                downvotes,
                 is_bloggable,
               }
             : post
         )
       );
     } catch (error) {
+      if (error.response?.status === 422) {
+        alert("You can only vote once per post!");
+      }
       logger.error(error);
     }
   };
@@ -423,12 +415,7 @@ const Posts = ({ categorySearched, selectedCategories, showUserPosts }) => {
                 style="text"
                 onClick={() => handleVote(post.slug, "upvote")}
               >
-                <UpArrow
-                  className={classnames("h-7 w-7", {
-                    "text-green-500":
-                      (post.upvotes || 0) - (post.downvotes || 0) > 0,
-                  })}
-                />
+                <UpArrow className="h-7 w-7" />
               </Button>
               <Typography className="text-xl font-bold">
                 {(post.upvotes || 0) - (post.downvotes || 0)}
@@ -438,12 +425,7 @@ const Posts = ({ categorySearched, selectedCategories, showUserPosts }) => {
                 style="text"
                 onClick={() => handleVote(post.slug, "downvote")}
               >
-                <DownArrow
-                  className={classnames("h-7 w-7", {
-                    "text-red-500":
-                      (post.upvotes || 0) - (post.downvotes || 0) < 0,
-                  })}
-                />
+                <DownArrow className="h-7 w-7" />
               </Button>
             </div>
           </div>

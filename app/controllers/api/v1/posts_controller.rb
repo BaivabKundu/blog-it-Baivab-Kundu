@@ -45,19 +45,48 @@
       def update
         authorize @post
         @post.update!(post_params)
-
-        ::Api::V1::PostBloggableUpdater.new(@post).call
-
-        render status: :ok, json: {
-          notice: t("successfully_updated", entity: "Post"),
-          is_bloggable: @post.is_bloggable
-        }
+        render_notice(t("successfully_updated", entity: "Post"))
       end
 
       def destroy
         authorize @post
         @post.destroy!
         render_notice(t("successfully_deleted", entity: "Post"))
+      end
+
+      def vote
+        @post = Post.find_by!(slug: params[:slug])
+        authorize @post
+
+        vote = @post.votes.find_or_initialize_by(user: current_user)
+        previous_type = vote.vote_type
+
+        if vote.new_record? || vote.vote_type != params[:vote_type]
+          ActiveRecord::Base.transaction do
+            # Remove previous vote count
+            case previous_type
+            when "upvote" then @post.decrement!(:upvotes)
+            when "downvote" then @post.decrement!(:downvotes)
+            end
+
+            # Add new vote count
+            case params[:vote_type]
+            when "upvote" then @post.increment!(:upvotes)
+            when "downvote" then @post.increment!(:downvotes)
+            end
+
+            vote.vote_type = params[:vote_type]
+            vote.save!
+
+            ::Api::V1::PostBloggableUpdater.new(@post).call
+          end
+        end
+
+        render json: {
+          upvotes: @post.upvotes,
+          downvotes: @post.downvotes,
+          is_bloggable: @post.is_bloggable
+        }
       end
 
       private

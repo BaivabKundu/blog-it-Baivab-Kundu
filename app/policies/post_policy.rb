@@ -16,6 +16,10 @@ class PostPolicy
     user.assigned_organization_id == post.assigned_organization_id
   end
 
+  def vote?
+    show?
+  end
+
   def create?
     true
   end

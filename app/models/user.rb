@@ -6,6 +6,9 @@ class User < ApplicationRecord
 
   has_many :assigned_post, foreign_key: :assigned_user_id, class_name: "Post"
 
+  has_many :votes
+  has_many :voted_posts, through: :votes, source: :post
+
   belongs_to :assigned_organization, foreign_key: "assigned_organization_id", class_name: "Organization"
 
   has_secure_password
