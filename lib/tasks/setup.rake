@@ -1,6 +1,12 @@
-desc 'drops the db, creates db, migrates db and populates sample data'
+desc 'creates db, migrates db and populates essential data'
 task setup: [:environment, 'db:create', 'db:migrate'] do
-  Rake::Task['populate_with_sample_data'].invoke if Rails.env.development?
+  if Rails.env.production?
+    puts "Seeding essential production data..."
+    create_essential_data!
+  else
+    puts "Seeding with sample data..."
+    Rake::Task['populate_with_sample_data'].invoke
+  end
 end
 
 task populate_with_sample_data: [:environment] do
@@ -34,4 +40,19 @@ def create_user!(options = {})
   user_attributes = { password: 'welcome1234', password_confirmation: 'welcome1234' }
   attributes = user_attributes.merge options
   User.create! attributes
+end
+
+def create_essential_data!
+  org_names = [
+    'Acme Corporation',
+    'Widget Industries',
+    'Global Solutions',
+    'Innovatech',
+    'Future Enterprises'
+  ]
+
+  org_names.each do |name|
+    org = create_organization!(organization_name: name)
+    puts "Created organization: #{org.organization_name}"
+  end
 end
