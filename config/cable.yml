@@ -1,5 +1,6 @@
 development:
-  adapter: async
+  adapter: redis
+  url: <%= Rails.application.secrets.redis_url %>
 
 test:
   adapter: test

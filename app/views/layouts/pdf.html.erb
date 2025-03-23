@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+  </head>
+  <style>
+    .flexrow {
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: flex;
+    }
+
+    .flexrow > div {
+      -webkit-box-flex: 1;
+      -webkit-flex: 1;
+      flex: 1;
+    }
+
+    .flexrow > div:last-child {
+      margin-right: 0;
+    }
+  </style>
+  <body onload="number_pages">
+    <div id="header"></div>
+    <div id="content"><%= yield %></div>
+  </body>
+</html>

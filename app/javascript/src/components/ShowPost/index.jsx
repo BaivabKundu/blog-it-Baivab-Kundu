@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Edit } from "@bigbinary/neeto-icons";
+import { Download, Edit } from "@bigbinary/neeto-icons";
 import { Typography, Tag, Avatar, Button } from "@bigbinary/neetoui";
 import { format } from "date-fns";
 import { useHistory, useParams, Link } from "react-router-dom";
@@ -8,9 +8,13 @@ import { useHistory, useParams, Link } from "react-router-dom";
 import postsApi from "apis/posts";
 import PageLoader from "components/commons/PageLoader";
 
+import DownloadModal from "./DownloadModal";
+
 const Show = () => {
   const [post, setPost] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+
   const { slug } = useParams();
   const history = useHistory();
 
@@ -25,6 +29,10 @@ const Show = () => {
       logger.error(error);
       history.push("/blogs");
     }
+  };
+
+  const handleDownload = () => {
+    setShowModal(true);
   };
 
   useEffect(() => {
@@ -61,17 +69,29 @@ const Show = () => {
                 />
               )}
             </div>
-            <Link to={`/posts/${post.slug}/edit`}>
+            <div>
               <Button
-                icon={Edit}
+                icon={Download}
                 size="large"
                 style="text"
                 tooltipProps={{
-                  content: "Edit",
+                  content: "Download",
                   position: "top",
                 }}
+                onClick={handleDownload}
               />
-            </Link>
+              <Link to={`/posts/${post.slug}/edit`}>
+                <Button
+                  icon={Edit}
+                  size="large"
+                  style="text"
+                  tooltipProps={{
+                    content: "Edit",
+                    position: "top",
+                  }}
+                />
+              </Link>
+            </div>
           </div>
           <div className="ml-2 flex items-center space-x-5">
             <Avatar size="large" />
@@ -87,6 +107,13 @@ const Show = () => {
           <Typography className="ml-2 mt-5">{post?.description}</Typography>
         </div>
       </div>
+      {showModal && (
+        <DownloadModal
+          setShowModal={setShowModal}
+          showModal={showModal}
+          slug={slug}
+        />
+      )}
     </div>
   );
 };

@@ -39,3 +39,8 @@ en:
       immutable: "is immutable"
     not_found: "Couldn't find Post"
   generic_error: "Something went wrong. Please try again later."
+  report:
+    render: "Rendering the report"
+    generate: "Generating the PDF report"
+    upload: "Uploading to server"
+    attach: "Attaching the report to the user"
