@@ -43,6 +43,7 @@
     "babel-plugin-dynamic-import-node": "^2.3.3",
     "babel-plugin-js-logger": "^1.0.17",
     "babel-plugin-macros": "^3.1.0",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "classnames": "2.3.1",
     "compression-webpack-plugin": "9",
     "css-loader": "^6.8.1",
