@@ -4,7 +4,6 @@
 // that code so it'll be compiled.
 
 import "../stylesheets/application.scss";
-
 const componentRequireContext = require.context("src", true);
 
 const { registerIntercepts, setAuthHeaders } = require("apis/axios");
